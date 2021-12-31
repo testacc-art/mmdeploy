@@ -133,6 +133,52 @@ Platform GetPlatform(int platform_id);
 
 Platform GetPlatform(const char *platform_name);
 
+class SyncBuffer {
+  friend class Accessor;
+  friend class HostAccessor;
+
+ public:
+  explicit SyncBuffer(size_t size, size_t page_size = -1);
+
+  size_t GetSize();
+
+ private:
+  struct Impl;
+  std::shared_ptr<Impl> impl_;
+};
+
+enum class AccessMode { read_only, write_only, read_write };
+
+class HostAccessor {
+ public:
+  HostAccessor(SyncBuffer &sync_buffer, size_t offset, size_t size, AccessMode mode);
+
+  ~HostAccessor();
+
+  template <class T = void>
+  T *ptr() noexcept {
+    return (T *)ptr_;
+  }
+
+ private:
+  void *ptr_;
+  void *region_;
+};
+
+class Accessor {
+ public:
+  Accessor(SyncBuffer &sync_buffer, size_t offset, size_t size, AccessMode mode, Stream &stream);
+
+  ~Accessor();
+
+  void *native() noexcept { return native_; }
+
+ private:
+  AccessMode mode_;
+  void *region_;
+  void *native_;
+};
+
 class Stream {
  public:
   Stream() = default;

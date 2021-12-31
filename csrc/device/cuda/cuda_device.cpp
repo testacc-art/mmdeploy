@@ -61,8 +61,9 @@ class Mallocator : public AllocatorImpl {
     }
     Block block;
     if (auto status = cudaMalloc(&block.handle, size); status != cudaSuccess) {
-      // log error
+      ERROR("cudaMalloc with code: {}", status);
     }
+    INFO("cudaMalloc({}) -> {}", size, block.handle);
     block.size = size;
     return block;
   }
@@ -70,6 +71,7 @@ class Mallocator : public AllocatorImpl {
     if (!block.handle) {
       return;
     }
+    INFO("cudaFree({} ({}))", block.handle, block.size);
     cudaFree(block.handle);
   }
   bool Owns(const Block& block) const noexcept override { return true; }
@@ -334,9 +336,10 @@ Result<void> CudaStreamImpl::Query() {
 
 Result<void> CudaStreamImpl::Wait() {
   CudaDeviceGuard guard(device_);
-  if (cudaStreamSynchronize(stream_) == cudaSuccess) {
+  if (auto status = cudaStreamSynchronize(stream_); status == cudaSuccess) {
     return success();
   } else {
+    ERROR("cudaStreamSynchronize failed: {}", status);
     return Status(eFail);
   }
 }

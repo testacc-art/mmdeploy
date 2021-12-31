@@ -4,7 +4,6 @@ project(tests)
 
 include(${CMAKE_SOURCE_DIR}/cmake/opencv.cmake)
 
-
 set(TC_SRCS test_main.cpp)
 
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/archive ARCHIVE_TC)
@@ -13,7 +12,9 @@ aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/preprocess TRANSFORM_TC)
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/net NET_TC)
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/model MODEL_TC)
 
-set(DEVICE_TC)
+set(DEVICE_TC
+        ${CMAKE_CURRENT_SOURCE_DIR}/device/test_sync_buffer.cpp
+        )
 foreach(DEVICE IN LISTS MMDEPLOY_TARGET_DEVICES)
   list(APPEND DEVICE_TC
        ${CMAKE_CURRENT_SOURCE_DIR}/device/test_${DEVICE}_device.cpp)
