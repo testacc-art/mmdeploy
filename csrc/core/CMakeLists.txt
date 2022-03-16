@@ -34,7 +34,8 @@ set(SRCS
         registry.cpp
         utils/device_utils.cpp
         utils/formatter.cpp
-        utils/stacktrace.cpp)
+        utils/stacktrace.cpp
+        ../experimental/execution.cpp)
 
 mmdeploy_add_library(${PROJECT_NAME} ${SRCS})
 target_compile_definitions(${PROJECT_NAME} PUBLIC -DMMDEPLOY_STATUS_USE_SOURCE_LOCATION=1)
@@ -48,9 +49,7 @@ target_include_directories(${PROJECT_NAME}
         $<INSTALL_INTERFACE:include/cpp>
         )
 target_link_libraries(${PROJECT_NAME} PUBLIC ${SPDLOG_LIB})
-if (NOT MSVC)
-    target_link_libraries(${PROJECT_NAME} PUBLIC stdc++fs)
-endif ()
+target_link_libraries(${PROJECT_NAME} PUBLIC ${MMDEPLOY_STD_FS_LIB})
 add_library(mmdeploy::core ALIAS ${PROJECT_NAME})
 
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/csrc/core
