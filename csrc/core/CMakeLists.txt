@@ -49,7 +49,9 @@ target_include_directories(${PROJECT_NAME}
         $<INSTALL_INTERFACE:include/cpp>
         )
 target_link_libraries(${PROJECT_NAME} PUBLIC ${SPDLOG_LIB})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${MMDEPLOY_STD_FS_LIB})
+if (NOT MSVC)
+    target_link_libraries(${PROJECT_NAME} PUBLIC stdc++fs)
+endif ()
 add_library(mmdeploy::core ALIAS ${PROJECT_NAME})
 
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/csrc/core
