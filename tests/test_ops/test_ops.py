@@ -16,7 +16,7 @@ TEST_TENSORRT = TestTensorRTExporter()
 TEST_NCNN = TestNCNNExporter()
 
 
-@pytest.mark.parametrize('backend', [TEST_ONNXRT, TEST_TENSORRT])
+@pytest.mark.parametrize('backend', [TEST_TENSORRT])
 @pytest.mark.parametrize('pool_h,pool_w,spatial_scale,sampling_ratio',
                          [(2, 2, 1.0, 2), (4, 4, 2.0, 4)])
 def test_roi_align(backend,
@@ -215,6 +215,52 @@ def test_modulated_deform_conv(backend,
 
 
 @pytest.mark.parametrize('backend', [TEST_TENSORRT])
+@pytest.mark.parametrize('in_channels,out_channels,stride,padding,'
+                         'dilation,groups,deform_groups,kernel_size',
+                         [(3, 64, 1, 0, 1, 1, 1, 3),
+                          (1, 32, 3, 2, 1, 1, 1, 3)])
+def test_deform_conv(backend,
+                     in_channels,
+                     out_channels,
+                     stride,
+                     padding,
+                     dilation,
+                     groups,
+                     deform_groups,
+                     kernel_size,
+                     input_list=None,
+                     save_dir=None):
+    backend.check_env()
+
+    if input_list is None:
+        input = torch.rand(
+            1, in_channels, 28, 28, requires_grad=False)  # (n, c, h, w)
+    else:
+        input = torch.tensor(input_list[0])
+    conv_offset = nn.Conv2d(
+        in_channels=in_channels,
+        out_channels=deform_groups * 2 * kernel_size * kernel_size,
+        kernel_size=kernel_size,
+        stride=stride,
+        padding=padding,
+        dilation=dilation,
+        bias=True)
+    offset = conv_offset(input)
+
+    from mmcv.ops import DeformConv2d
+    model = DeformConv2d(in_channels, out_channels, kernel_size, stride,
+                         padding, dilation, groups, deform_groups).eval()
+
+    with RewriterContext(cfg={}, backend=backend.backend_name, opset=11):
+        backend.run_and_validate(
+            model, [input, offset],
+            'deform_conv',
+            input_names=['input', 'offset'],
+            output_names=['output'],
+            save_dir=save_dir)
+
+
+@pytest.mark.parametrize('backend', [TEST_TENSORRT])
 @pytest.mark.parametrize('dynamic_export', [True, False])
 @pytest.mark.parametrize('fp16_mode', [True, False])
 @pytest.mark.parametrize('n, c, h, w', [(2, 3, 10, 10)])
@@ -334,11 +380,14 @@ def test_batched_nms(backend,
 
 
 @pytest.mark.parametrize('backend', [TEST_TENSORRT])
-@pytest.mark.parametrize('out_size, sampling_ratio,roi_scale_factor,'
-                         ' finest_scale,featmap_strides, aligned',
-                         [(tuple([2, 2]), 2, 1.0, 2, list([2.0, 4.0]), 1)])
+@pytest.mark.parametrize(
+    'out_size, pool_mode, sampling_ratio,roi_scale_factor,'
+    ' finest_scale,featmap_strides, aligned',
+    [(tuple([2, 2]), 0, 2, 1.0, 2, list([2.0, 4.0]), 1),
+     (tuple([2, 2]), 1, 2, 1.0, 2, list([2.0, 4.0]), 1)])
 def test_multi_level_roi_align(backend,
                                out_size,
+                               pool_mode,
                                sampling_ratio,
                                roi_scale_factor,
                                finest_scale,
@@ -376,10 +425,21 @@ def test_multi_level_roi_align(backend,
                             [0.9178, 0.7282, 0.0291, 0.3028]]]])
         ]
         rois = torch.tensor([[0., 0., 0., 4., 4.]])
-        expected_result = torch.tensor([[[[0.1939, 0.3950], [0.3437, 0.4543]],
-                                         [[0.0778, 0.1641], [0.1305, 0.2301]],
-                                         [[0.1542, 0.2413], [0.2094,
-                                                             0.2688]]]])
+        if pool_mode == 1:
+            expected_result = torch.tensor([[[[0.1939, 0.3950],
+                                              [0.3437, 0.4543]],
+                                             [[0.0778, 0.1641],
+                                              [0.1305, 0.2301]],
+                                             [[0.1542, 0.2413],
+                                              [0.2094, 0.2688]]]])
+        else:
+            expected_result = torch.tensor([[[[0.1939, 0.4956],
+                                              [0.4185, 0.5167]],
+                                             [[0.0778, 0.2073],
+                                              [0.1569, 0.3162]],
+                                             [[0.1542, 0.2849],
+                                              [0.2370, 0.3053]]]])
+
     else:
         input = input_list[0]
         rois = input_list[1]
@@ -405,6 +465,7 @@ def test_multi_level_roi_align(backend,
         'MMCVMultiLevelRoiAlign_0',
         None,
         'mmdeploy',
+        pool_mode=pool_mode,
         aligned=aligned,
         featmap_strides=featmap_strides,
         finest_scale=finest_scale,
