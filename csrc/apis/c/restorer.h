@@ -74,7 +74,7 @@ MMDEPLOY_API int mmdeploy_restorer_create_input(const mm_mat_t* mats, int mat_co
 MMDEPLOY_API int mmdeploy_restorer_apply_v2(mm_handle_t handle, mmdeploy_value_t input,
                                             mmdeploy_value_t* output);
 
-MMDEPLOY_API int mmdeploy_restorer_apply_async(mm_handle_t handle, mmdeploy_sender_t* input,
+MMDEPLOY_API int mmdeploy_restorer_apply_async(mm_handle_t handle, mmdeploy_sender_t input,
                                                mmdeploy_sender_t* output);
 
 MMDEPLOY_API int mmdeploy_restorer_get_result(mmdeploy_value_t output, mm_mat_t** results);

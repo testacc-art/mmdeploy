@@ -93,7 +93,7 @@ MMDEPLOY_API int mmdeploy_classifier_apply_v2(mm_handle_t handle, mmdeploy_value
  * @param[out] output output sender
  * @return status of the operation
  */
-MMDEPLOY_API int mmdeploy_classifier_apply_async(mm_handle_t handle, mmdeploy_sender_t* input,
+MMDEPLOY_API int mmdeploy_classifier_apply_async(mm_handle_t handle, mmdeploy_sender_t input,
                                                  mmdeploy_sender_t* output);
 
 /**

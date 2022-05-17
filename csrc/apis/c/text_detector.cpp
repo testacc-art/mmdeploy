@@ -104,23 +104,13 @@ int mmdeploy_text_detector_apply_v2(mm_handle_t handle, mmdeploy_value_t input,
   return mmdeploy_pipeline_apply(handle, input, output);
 }
 
-mmdeploy_sender_t mmdeploy_text_detector_apply_async(mm_handle_t handle, mmdeploy_sender_t input) {
-  return mmdeploy_pipeline_apply_async(handle, input);
+int mmdeploy_text_detector_apply_async(mm_handle_t handle, mmdeploy_sender_t input,
+                                       mmdeploy_sender_t* output) {
+  return mmdeploy_pipeline_apply_async(handle, input, output);
 }
 
-int mmdeploy_text_detector_apply_async_v3(mm_handle_t handle, mmdeploy_sender_t* input,
-                                          mmdeploy_sender_t* output) {
-  return mmdeploy_pipeline_apply_async_v3(handle, input, output);
-}
 
-mmdeploy_sender_t mmdeploy_text_detector_apply_async_v4(mm_handle_t handle,
-                                                        mmdeploy_sender_t* input, int* ec) {
-  mmdeploy_sender_t output{};
-  if (auto e = mmdeploy_pipeline_apply_async_v3(handle, input, &output); e && ec) {
-    *ec = e;
-  }
-  return output;
-}
+
 
 int mmdeploy_text_detector_get_result(mmdeploy_value_t output, mm_text_detect_t** results,
                                       int** result_count) {
@@ -188,7 +178,7 @@ int mmdeploy_text_detector_apply_async_v2(mm_handle_t handle, const mm_mat_t* im
   mmdeploy_sender_t input_sndr = mmdeploy_executor_just(input_val);
 
   mmdeploy_sender_t output_sndr{};
-  if (auto ec = mmdeploy_text_detector_apply_async_v3(handle, &input_sndr, &output_sndr)) {
+  if (auto ec = mmdeploy_text_detector_apply_async(handle, input_sndr, &output_sndr)) {
     return ec;
   }
 

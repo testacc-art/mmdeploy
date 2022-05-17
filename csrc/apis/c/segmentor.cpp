@@ -116,9 +116,9 @@ int mmdeploy_segmentor_apply_v2(mm_handle_t handle, mmdeploy_value_t input,
   return mmdeploy_pipeline_apply(handle, input, output);
 }
 
-int mmdeploy_segmentor_apply_async(mm_handle_t handle, mmdeploy_sender_t* input,
+int mmdeploy_segmentor_apply_async(mm_handle_t handle, mmdeploy_sender_t input,
                                    mmdeploy_sender_t* output) {
-  return mmdeploy_pipeline_apply_async_v3(handle, input, output);
+  return mmdeploy_pipeline_apply_async(handle, input, output);
 }
 
 int mmdeploy_segmentor_get_result(mmdeploy_value_t output, mm_segment_t** results) {

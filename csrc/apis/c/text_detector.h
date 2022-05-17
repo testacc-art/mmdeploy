@@ -106,8 +106,8 @@ MMDEPLOY_API int mmdeploy_text_detector_apply_v2(mm_handle_t handle, mmdeploy_va
  * @param[in] input input sender that will be consumed by the operation
  * @return output sender
  */
-MMDEPLOY_API mmdeploy_sender_t mmdeploy_text_detector_apply_async(mm_handle_t handle,
-                                                                  mmdeploy_sender_t input);
+MMDEPLOY_API int mmdeploy_text_detector_apply_async(mm_handle_t handle, mmdeploy_sender_t input,
+                                                    mmdeploy_sender_t* output);
 
 /**
  * @brief Unpack detector output from a mmdeploy_value_t
@@ -124,7 +124,7 @@ int mmdeploy_text_detector_get_result(mmdeploy_value_t output, mm_text_detect_t*
                                       int** result_count);
 
 typedef int (*mmdeploy_text_detector_continuation_t)(mm_text_detect_t* results, int* result_count,
-                                             void* context, mmdeploy_sender_t* output);
+                                                     void* context, mmdeploy_sender_t* output);
 
 MMDEPLOY_API int mmdeploy_text_detector_apply_async_v2(mm_handle_t handle, const mm_mat_t* imgs,
                                                        int img_count,

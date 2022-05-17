@@ -102,7 +102,7 @@ MMDEPLOY_API int mmdeploy_pose_detector_create_input(const mm_mat_t* mats, int m
 MMDEPLOY_API int mmdeploy_pose_detector_apply_v2(mm_handle_t handle, mmdeploy_value_t input,
                                                  mmdeploy_value_t* output);
 
-MMDEPLOY_API int mmdeploy_pose_detector_apply_async(mm_handle_t handle, mmdeploy_sender_t* input,
+MMDEPLOY_API int mmdeploy_pose_detector_apply_async(mm_handle_t handle, mmdeploy_sender_t input,
                                                     mmdeploy_sender_t* output);
 
 MMDEPLOY_API int mmdeploy_pose_detector_get_result(mmdeploy_value_t output,

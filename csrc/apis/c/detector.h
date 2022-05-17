@@ -94,8 +94,8 @@ MMDEPLOY_API int mmdeploy_detector_apply_v2(mm_handle_t handle, mmdeploy_value_t
  * @param[in] input input sender
  * @return output sender
  */
-MMDEPLOY_API mmdeploy_sender_t mmdeploy_detector_apply_async(mm_handle_t handle,
-                                                             mmdeploy_sender_t input);
+MMDEPLOY_API int mmdeploy_detector_apply_async(mm_handle_t handle, mmdeploy_sender_t input,
+                                               mmdeploy_sender_t* output);
 
 // TODO: for discussion only, not implemented
 MMDEPLOY_API mmdeploy_sender_t mmdeploy_detector_apply_async_v2(mm_handle_t handle,

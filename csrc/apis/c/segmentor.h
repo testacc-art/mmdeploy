@@ -84,7 +84,7 @@ MMDEPLOY_API int mmdeploy_segmentor_create_input(const mm_mat_t* mats, int mat_c
 MMDEPLOY_API int mmdeploy_segmentor_apply_v2(mm_handle_t handle, mmdeploy_value_t input,
                                              mmdeploy_value_t* output);
 
-MMDEPLOY_API int mmdeploy_segmentor_apply_async(mm_handle_t handle, mmdeploy_sender_t* input,
+MMDEPLOY_API int mmdeploy_segmentor_apply_async(mm_handle_t handle, mmdeploy_sender_t input,
                                                 mmdeploy_sender_t* output);
 
 MMDEPLOY_API int mmdeploy_segmentor_get_result(mmdeploy_value_t output, mm_segment_t** results);
