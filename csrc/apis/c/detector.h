@@ -107,7 +107,7 @@ MMDEPLOY_API int mmdeploy_detector_apply_async_v3(mm_handle_t handle, mmdeploy_s
 
 /**
  * @brief Unpack detector output from a mmdeploy_value_t
- * @param[in] output output sender returned by applying a detector
+ * @param[in] output output obtained by applying a detector
  * @param[out] results a linear buffer to save detection results of each image. It must be released
  * by \ref mmdeploy_detector_release_result
  * @param[out] result_count a linear buffer with length number of input images to save the number of
