@@ -109,9 +109,6 @@ int mmdeploy_text_detector_apply_async(mm_handle_t handle, mmdeploy_sender_t inp
   return mmdeploy_pipeline_apply_async(handle, input, output);
 }
 
-
-
-
 int mmdeploy_text_detector_get_result(mmdeploy_value_t output, mm_text_detect_t** results,
                                       int** result_count) {
   if (!output || !results || !result_count) {
@@ -170,6 +167,18 @@ void mmdeploy_text_detector_destroy(mm_handle_t handle) { mmdeploy_pipeline_dest
 int mmdeploy_text_detector_apply_async_v2(mm_handle_t handle, const mm_mat_t* imgs, int img_count,
                                           mmdeploy_text_detector_continuation_t cont, void* context,
                                           mmdeploy_sender_t* output) {
+  mmdeploy_sender_t result_sender{};
+  if (auto ec = mmdeploy_text_detector_apply_async_v3(handle, imgs, img_count, &result_sender)) {
+    return ec;
+  }
+  if (auto ec = mmdeploy_text_detector_continue_async(result_sender, cont, context, output)) {
+    return ec;
+  }
+  return MM_SUCCESS;
+}
+
+int mmdeploy_text_detector_apply_async_v3(mm_handle_t handle, const mm_mat_t* imgs, int img_count,
+                                          mmdeploy_sender_t* output) {
   wrapped<mmdeploy_value_t> input_val;
   if (auto ec = mmdeploy_text_detector_create_input_v2(imgs, img_count, input_val.ptr())) {
     return ec;
@@ -182,9 +191,15 @@ int mmdeploy_text_detector_apply_async_v2(mm_handle_t handle, const mm_mat_t* im
     return ec;
   }
 
+  return MM_SUCCESS;
+}
+
+int mmdeploy_text_detector_continue_async(mmdeploy_sender_t input,
+                                          mmdeploy_text_detector_continuation_t cont, void* context,
+                                          mmdeploy_sender_t* output) {
   auto sender = Guard([&] {
     return Take(
-        LetValue(Take(output_sndr), [fn = cont, context](Value& value) -> TypeErasedSender<Value> {
+        LetValue(Take(input), [fn = cont, context](Value& value) -> TypeErasedSender<Value> {
           mm_text_detect_t* results{};
           int* result_count{};
           if (auto ec = mmdeploy_text_detector_get_result(Cast(&value), &results, &result_count)) {

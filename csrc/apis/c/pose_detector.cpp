@@ -115,7 +115,9 @@ void mmdeploy_pose_detector_release_result(mm_pose_detect_t* results, int count)
   delete[] results;
 }
 
-void mmdeploy_pose_detector_destroy(mm_handle_t handle) { delete static_cast<Handle*>(handle); }
+void mmdeploy_pose_detector_destroy(mm_handle_t handle) {
+  delete static_cast<AsyncHandle*>(handle);
+}
 
 int mmdeploy_pose_detector_create_v2(mm_model_t model, const char* device_name, int device_id,
                                      mmdeploy_exec_info_t exec_info, mm_handle_t* handle) {

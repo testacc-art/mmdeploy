@@ -97,7 +97,7 @@ void mmdeploy_segmentor_release_result(mm_segment_t* results, int count) {
 
 void mmdeploy_segmentor_destroy(mm_handle_t handle) {
   if (handle != nullptr) {
-    auto segmentor = static_cast<Handle*>(handle);
+    auto segmentor = static_cast<AsyncHandle*>(handle);
     delete segmentor;
   }
 }

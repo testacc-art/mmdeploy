@@ -156,7 +156,7 @@ void mmdeploy_classifier_release_result(mm_class_t* results, const int* result_c
 
 void mmdeploy_classifier_destroy(mm_handle_t handle) {
   if (handle != nullptr) {
-    auto classifier = static_cast<Handle*>(handle);
+    auto classifier = static_cast<AsyncHandle*>(handle);
     delete classifier;
   }
 }
