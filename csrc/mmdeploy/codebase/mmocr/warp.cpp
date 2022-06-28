@@ -12,8 +12,8 @@
 
 namespace mmdeploy {
 
-// warp rotated rect
-class WarpBoxes {
+// Warp rotated rect
+class WarpBbox {
  public:
   Result<Value> operator()(const Value& img, const Value& det) {
     auto ori_img = img["ori_img"].get<mmdeploy::Mat>();
@@ -63,12 +63,12 @@ class WarpBoxes {
   }
 };
 
-class WarpBoxesCreator : public Creator<Module> {
+class WarpBboxCreator : public Creator<Module> {
  public:
-  const char* GetName() const override { return "WarpBoxes"; }
-  std::unique_ptr<Module> Create(const Value& value) override { return CreateTask(WarpBoxes{}); }
+  const char* GetName() const override { return "WarpBbox"; }
+  std::unique_ptr<Module> Create(const Value& value) override { return CreateTask(WarpBbox{}); }
 };
 
-REGISTER_MODULE(Module, WarpBoxesCreator);
+REGISTER_MODULE(Module, WarpBboxCreator);
 
 }  // namespace mmdeploy
