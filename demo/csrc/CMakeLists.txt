@@ -28,3 +28,10 @@ add_example(restorer image_restorer)
 add_example(text_detector ocr)
 add_example(pose_detector pose_detection)
 add_example(rotated_detector rotated_object_detection)
+
+
+add_example("" async_ocr)
+add_example("" async_ocr_v2)
+add_example("" det_cls)
+add_example("" det_pose)
+add_example("" text_det_recog)
