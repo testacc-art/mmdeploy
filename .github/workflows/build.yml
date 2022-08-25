@@ -111,6 +111,9 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - run: echo $pythonLocation/include/python${{ matrix.python-version }}
+      - name: Set selected color
+        run: echo '::set-output name=pythonInclude::$pythonLocation/include/python${{ matrix.python-version }}'
+        id: python-include
       - name: Install system dependencies
         run: |
           apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A4B469963BF863CC
@@ -129,7 +132,7 @@ jobs:
           pip install -U pycuda
           python -m pip install -U numpy
         env: 
-          CPATH: $pythonLocation/include/python${{ matrix.python-version }}m
+          CPATH: ${{ steps.python-include.outputs.pythonInclude }}
       - name: Build and install
         run: |
           rm -rf .eggs && python -m pip install -e .
