@@ -112,10 +112,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: |
           echo $pythonLocation/include/python${{ matrix.python-version }}
-          CPATH=$pythonLocation/include/python${{ matrix.python-version }}
+          CPATH=$pythonLocation/include/python${{ matrix.python-version }}m
           echo "CPATH=$CPATH" >> $GITHUB_ENV
       - name: Set selected color
-        run: echo '::set-output name=pythonInclude::$pythonLocation/include/python${{ matrix.python-version }}'
+        run: echo '::set-output name=pythonInclude::$pythonLocation/include/python${{ matrix.python-version }}m'
         id: python-include
       - name: Install system dependencies
         run: |
