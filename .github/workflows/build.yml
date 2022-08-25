@@ -110,7 +110,10 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - run: echo $pythonLocation/include/python${{ matrix.python-version }}
+      - run: |
+          echo $pythonLocation/include/python${{ matrix.python-version }}
+          CPATH=$pythonLocation/include/python${{ matrix.python-version }}
+          echo "CPATH=$CPATH" >> $GITHUB_ENV
       - name: Set selected color
         run: echo '::set-output name=pythonInclude::$pythonLocation/include/python${{ matrix.python-version }}'
         id: python-include
@@ -125,8 +128,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -V
-          
-          export CPATH=$pythonLocation/include/python${{ matrix.python-version }}
+          echo $CPATH
           python -m pip install mmcv-full==${{matrix.mmcv}} -f https://download.openmmlab.com/mmcv/dist/cu102/${{matrix.torch_version}}/index.html
           python -m pip install -r requirements.txt
           pip install -U pycuda
