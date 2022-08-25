@@ -126,13 +126,12 @@ jobs:
         run: |
           python -V
           
-          echo $CPATH
+          export CPATH=$pythonLocation/include/python${{ matrix.python-version }}
           python -m pip install mmcv-full==${{matrix.mmcv}} -f https://download.openmmlab.com/mmcv/dist/cu102/${{matrix.torch_version}}/index.html
           python -m pip install -r requirements.txt
           pip install -U pycuda
           python -m pip install -U numpy
-        env: 
-          CPATH: ${{ steps.python-include.outputs.pythonInclude }}
+
       - name: Build and install
         run: |
           rm -rf .eggs && python -m pip install -e .
