@@ -129,7 +129,7 @@ jobs:
           pip install -U pycuda
           python -m pip install -U numpy
         env: 
-          CPATH: /__t/Python/3.7.13/x64/include/python3.7m
+          CPATH: $pythonLocation/include/python${{ matrix.python-version }}m
       - name: Build and install
         run: |
           rm -rf .eggs && python -m pip install -e .
